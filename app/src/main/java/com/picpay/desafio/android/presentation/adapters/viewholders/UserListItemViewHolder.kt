@@ -17,7 +17,7 @@ class UserListItemViewHolder(
         itemView.username.text = user.username
         itemView.progressBar.visibility = View.VISIBLE
         Picasso.get()
-            .load(user.img)
+            .load(user.image)
             .error(R.drawable.ic_round_account_circle)
             .into(itemView.picture, object : Callback {
                 override fun onSuccess() {
