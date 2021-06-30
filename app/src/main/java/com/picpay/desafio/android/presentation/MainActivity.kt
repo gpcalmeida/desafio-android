@@ -1,9 +1,7 @@
 package com.picpay.desafio.android.presentation
 
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,15 +9,13 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.picpay.desafio.android.data.PicPayService
 import com.picpay.desafio.android.R
-import com.picpay.desafio.android.domain.User
+import com.picpay.desafio.android.data.PicPayRepository
+import com.picpay.desafio.android.domain.usecases.GetUserUseCase
 import com.picpay.desafio.android.presentation.adapters.UserListAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -52,6 +48,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         retrofit.create(PicPayService::class.java)
     }
 
+    private val repository by lazy {
+        PicPayRepository(service)
+    }
+
+    private val getUsersUseCase by lazy {
+        GetUserUseCase(repository)
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -66,7 +70,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
 
         GlobalScope.launch(Dispatchers.Main) {
-            adapter.users = service.getUsers()
+            adapter.users = getUsersUseCase.execute()
             progressBar.visibility = View.GONE
         }
 //            .enqueue(object : Callback<List<User>> {

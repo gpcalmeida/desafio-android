@@ -1,7 +1,7 @@
 package com.picpay.desafio.android
 
 import com.picpay.desafio.android.data.PicPayService
-import com.picpay.desafio.android.domain.User
+import com.picpay.desafio.android.domain.model.User
 
 class ExampleService(
     private val service: PicPayService
