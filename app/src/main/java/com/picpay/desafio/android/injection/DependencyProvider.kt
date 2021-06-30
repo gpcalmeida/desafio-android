@@ -23,5 +23,5 @@ object DependencyProvider {
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
-    val picPayService = picPayRetrofitInstance.create(PicPayService::class.java)
+    val picPayService: PicPayService = picPayRetrofitInstance.create(PicPayService::class.java)
 }

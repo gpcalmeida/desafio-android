@@ -3,83 +3,74 @@ package com.picpay.desafio.android.presentation
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.databinding.ActivityMainBinding
 import com.picpay.desafio.android.presentation.adapters.UserListAdapter
 import com.picpay.desafio.android.injection.MainInjection.injectMainViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var progressBar: ProgressBar
     private lateinit var adapter: UserListAdapter
 
     private val viewModel by lazy {
         injectMainViewModel()
     }
 
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        recyclerView = findViewById(R.id.recyclerView)
-        progressBar = findViewById(R.id.user_list_progress_bar)
+        setContentView(binding.root)
 
         adapter = UserListAdapter()
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
 
-        progressBar.visibility = View.VISIBLE
+        with(binding) {
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+
+            userListProgressBar.visibility = View.VISIBLE
+        }
+
+        setupObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         viewModel.getUsers()
+    }
 
-        viewModel.users.observe(this, {
-            adapter.users = it
-            progressBar.visibility = View.GONE
+    private fun setupObservers() {
+        viewModel.mainState.observe(this, {
+            handleMainResult(it)
         })
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//
-//        recyclerView = findViewById(R.id.recyclerView)
-//        progressBar = findViewById(R.id.user_list_progress_bar)
-//
-//        adapter = UserListAdapter()
-//        recyclerView.adapter = adapter
-//        recyclerView.layoutManager = LinearLayoutManager(this)
-//
-//        progressBar.visibility = View.VISIBLE
-//
-//        viewModel.getUsers()
-//
-//        viewModel.users.observe(this, {
-//            adapter.users = it
-//            progressBar.visibility = View.GONE
-//        })
+    private fun handleMainResult(result: MainResult) {
+        with(binding) {
+            when (result) {
+                is MainResult.Success -> {
+                    adapter.users = result.users
+                    userListProgressBar.visibility = View.GONE
+                }
+                is MainResult.Failure -> {
+                    userListProgressBar.visibility = View.GONE
+                    recyclerView.visibility = View.GONE
 
-//        GlobalScope.launch(Dispatchers.Main) {
-//            adapter.users = getUsersUseCase.execute()
-//            progressBar.visibility = View.GONE
-//        }
-//            .enqueue(object : Callback<List<User>> {
-//                override fun onFailure(call: Call<List<User>>, t: Throwable) {
-//                    val message = getString(R.string.error)
-//
-//                    progressBar.visibility = View.GONE
-//                    recyclerView.visibility = View.GONE
-//
-//                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-//
-//                override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-//                    progressBar.visibility = View.GONE
-//
-//                    adapter.users = response.body()!!
-//                }
-//            })
+                    val message = getString(R.string.error)
+                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                }
+                is MainResult.Loading -> {
+                    userListProgressBar.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 }
