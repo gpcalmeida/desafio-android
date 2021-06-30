@@ -13,6 +13,7 @@ import com.picpay.desafio.android.data.PicPayService
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.domain.User
 import com.picpay.desafio.android.presentation.adapters.UserListAdapter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -63,9 +64,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         progressBar.visibility = View.VISIBLE
 
-        GlobalScope.launch {
-            val users = service.getUsers()
-            Log.i("Users:", users.toString())
+
+        GlobalScope.launch(Dispatchers.Main) {
+            adapter.users = service.getUsers()
+            progressBar.visibility = View.GONE
         }
 //            .enqueue(object : Callback<List<User>> {
 //                override fun onFailure(call: Call<List<User>>, t: Throwable) {
