@@ -2,13 +2,13 @@ package com.picpay.desafio.android.presentation
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.data.room.UserDatabase
 import com.picpay.desafio.android.databinding.ActivityMainBinding
+import com.picpay.desafio.android.domain.model.result.MainResult
 import com.picpay.desafio.android.presentation.adapters.UserListAdapter
 import com.picpay.desafio.android.injection.MainInjection.injectMainViewModel
 
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         viewModel.getUsers()
+        UserDatabase.getDatabase()
     }
 
     private fun setupObservers() {

@@ -2,7 +2,9 @@ package com.picpay.desafio.android.injection
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.picpay.desafio.android.data.PicPayService
+import com.picpay.desafio.android.data.api.PicPayService
+import com.picpay.desafio.android.data.room.UserDatabase
+import com.picpay.desafio.android.domain.mappers.mapToUser
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -24,4 +26,5 @@ object DependencyProvider {
         .build()
 
     val picPayService: PicPayService = picPayRetrofitInstance.create(PicPayService::class.java)
+    val userDatabase = UserDatabase.getDatabase()
 }
