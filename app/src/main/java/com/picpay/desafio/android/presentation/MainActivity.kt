@@ -1,5 +1,6 @@
 package com.picpay.desafio.android.presentation
 
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -12,11 +13,14 @@ import com.picpay.desafio.android.data.PicPayService
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.domain.User
 import com.picpay.desafio.android.presentation.adapters.UserListAdapter
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -38,6 +42,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         Retrofit.Builder()
             .baseUrl(url)
             .client(okHttp)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
@@ -57,23 +62,27 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         progressBar.visibility = View.VISIBLE
-        service.getUsers()
-            .enqueue(object : Callback<List<User>> {
-                override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                    val message = getString(R.string.error)
 
-                    progressBar.visibility = View.GONE
-                    recyclerView.visibility = View.GONE
-
-                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                    progressBar.visibility = View.GONE
-
-                    adapter.users = response.body()!!
-                }
-            })
+        GlobalScope.launch {
+            val users = service.getUsers()
+            Log.i("Users:", users.toString())
+        }
+//            .enqueue(object : Callback<List<User>> {
+//                override fun onFailure(call: Call<List<User>>, t: Throwable) {
+//                    val message = getString(R.string.error)
+//
+//                    progressBar.visibility = View.GONE
+//                    recyclerView.visibility = View.GONE
+//
+//                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+//
+//                override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+//                    progressBar.visibility = View.GONE
+//
+//                    adapter.users = response.body()!!
+//                }
+//            })
     }
 }
