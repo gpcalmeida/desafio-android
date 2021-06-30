@@ -7,7 +7,6 @@ class PicPayApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         UserDatabase.getDatabase(this.applicationContext)
     }
 }

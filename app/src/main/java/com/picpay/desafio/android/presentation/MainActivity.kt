@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.data.room.UserDatabase
 import com.picpay.desafio.android.databinding.ActivityMainBinding
+import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.domain.model.result.MainResult
 import com.picpay.desafio.android.presentation.adapters.UserListAdapter
 import com.picpay.desafio.android.injection.MainInjection.injectMainViewModel
@@ -39,6 +40,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupObservers()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList(USER_KEY, ArrayList(adapter.users))
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        val savedUsers = savedInstanceState.getParcelableArrayList<User>(USER_KEY)
+        adapter.users = savedUsers ?: emptyList()
+        super.onRestoreInstanceState(savedInstanceState)
     }
 
     override fun onResume() {
@@ -73,5 +85,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val USER_KEY = "USER_KEY"
     }
 }
