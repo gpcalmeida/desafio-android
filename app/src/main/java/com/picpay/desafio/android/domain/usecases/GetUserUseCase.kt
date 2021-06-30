@@ -6,6 +6,12 @@ import com.picpay.desafio.android.domain.model.User
 class GetUserUseCase(
     private val repository: PicPayRepository
 ) {
-
     suspend fun execute() : List<User> = repository.getUsers()
+
+    companion object {
+        fun make() : GetUserUseCase {
+            val repo = PicPayRepository.make()
+            return GetUserUseCase(repo)
+        }
+    }
 }
