@@ -17,6 +17,6 @@ object MainInjection {
     }
 
     fun AppCompatActivity.injectMainViewModel(): MainViewModel {
-        return ViewModelProvider(this, MainInjection.Factory()).get(MainViewModel::class.java)
+        return ViewModelProvider(this, Factory()).get(MainViewModel::class.java)
     }
 }
