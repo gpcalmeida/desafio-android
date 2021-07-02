@@ -1,7 +1,7 @@
 package com.picpay.desafio.android.domain.usecases
 
-import com.picpay.desafio.android.data.api.CacheRepository
-import com.picpay.desafio.android.data.api.PicPayRepository
+import com.picpay.desafio.android.data.api.repo.cache.CacheRepository
+import com.picpay.desafio.android.data.api.repo.picpay.PicPayRepository
 import com.picpay.desafio.android.domain.mappers.mapToUser
 import com.picpay.desafio.android.domain.model.User
 

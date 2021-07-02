@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.data.api
+package com.picpay.desafio.android.data.api.repo
 
 import com.picpay.desafio.android.data.response.UserResponse
 
